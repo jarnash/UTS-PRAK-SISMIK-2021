@@ -1,0 +1,276 @@
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 1
+
+
+
+
+
+       MCS-51 Family Macro Assembler   A S E M - 5 1   V 1.3
+       =====================================================
+
+
+
+	Source File:	D:\Sumber semester 5\RunningText.asm
+	Object File:	D:\Sumber semester 5\RunningText.hex
+	List File:	D:\Sumber semester 5\RunningText.lst
+
+
+
+ Line  I  Addr  Code            Source
+
+    1:		N      0000	ORG 000H
+    2:	  0000	21 00		AJMP START
+    3:
+    4:				;=======LCD KONSTANTA======
+    5:		N      0001	DISPCLR EQU 00000001B
+    6:		N      0038	FUNCSET EQU 00111000B
+    7:		N      0006	ENTRMOD EQU 00000110B
+    8:		N      000C	DISPON EQU 00001100B
+    9:
+   10:		N      0100	ORG 100H
+   11:	  0100			START:
+   12:	  0100	12 01 45	LCALL INITLCD
+   13:
+   14:	  0103	74 80		MOV A,#80H
+   15:	  0105	12 01 31	CALL INSTLCD
+   16:	  0108	90 01 81	MOV DPTR,#TULISAN1
+   17:	  010B	12 01 73	CALL LCDSTRING
+   18:
+   19:	  010E	74 80		MOV A,#80H
+   20:	  0110	12 01 31	CALL INSTLCD
+   21:	  0113	90 01 90	MOV DPTR,#TULISAN2
+   22:	  0116	12 01 73	CALL LCDSTRING
+   23:
+   24:	  0119	74 80		MOV A,#80H
+   25:	  011B	12 01 31	CALL INSTLCD
+   26:	  011E	90 01 9F	MOV DPTR,#TULISAN3
+   27:	  0121	12 01 73	CALL LCDSTRING
+   28:
+   29:	  0124	74 80		MOV A,#80H
+   30:	  0126	12 01 31	CALL INSTLCD
+   31:	  0129	90 01 AE	MOV DPTR,#TULISAN4
+   32:	  012C	12 01 73	CALL LCDSTRING
+   33:
+   34:	  012F	21 2F		LOOP: AJMP LOOP
+   35:				;=======PROSEDUR KONTROL DATA OPERASI========
+   36:	  0131			INSTLCD:
+   37:	  0131	C2 B2		CLR P3.2
+   38:	  0133	80 04		SJMP LCDOUT
+   39:	  0135	D2 B2		DATALCD:SETB P3.2
+   40:	  0137	80 00		SJMP LCDOUT
+   41:	  0139	F5 90		LCDOUT: MOV P1,A
+   42:	  013B	D2 B3		SETB P3.3
+   43:	  013D	C2 B3		CLR P3.3
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 2
+
+
+
+ Line  I  Addr  Code            Source
+
+   44:	  013F	D2 B3		SETB P3.3
+   45:	  0141	12 01 78	LCALL DELAY
+   46:	  0144	22		RET
+   47:
+   48:				;=======PROSEDUR INISIALISASI LCD=============
+   49:	  0145			INITLCD:
+   50:	  0145	74 01		MOV A,#DISPCLR
+   51:	  0147	12 01 31	LCALL INSTLCD
+   52:	  014A	12 01 78	LCALL DELAY
+   53:	  014D	74 38		MOV A,#FUNCSET
+   54:	  014F	12 01 31	LCALL INSTLCD
+   55:	  0152	12 01 78	LCALL DELAY
+   56:	  0155	74 0C		MOV A,#DISPON
+   57:	  0157	12 01 31	LCALL INSTLCD
+   58:	  015A	12 01 78	LCALL DELAY
+   59:	  015D	74 06		MOV A,#ENTRMOD
+   60:	  015F	12 01 31	LCALL INSTLCD
+   61:	  0162	12 01 78	LCALL DELAY
+   62:	  0165	22		RET
+   63:
+   64:				;=======PROSEDUR PENULISAN DATA KE LCD
+   65:	  0166			WR_DT:
+   66:	  0166	24 30		ADD A,#30H
+   67:	  0168	12 01 35	LCALL DATALCD
+   68:	  016B	12 01 78	LCALL DELAY
+   69:	  016E	22		RET
+   70:				;=======PROSEDUR CETAK STRING=========
+   71:	  016F			PRINTSTRINGLOOP:
+   72:	  016F	12 01 35	LCALL DATALCD
+   73:	  0172	A3		INC DPTR
+   74:	  0173			LCDSTRING:
+   75:	  0173	E4		CLR A
+   76:	  0174	93		MOVC A,@A+DPTR
+   77:	  0175	70 F8		JNZ PRINTSTRINGLOOP
+   78:	  0177	22		RET
+   79:
+   80:				;=======PROSEDUR DELAY=========
+   81:	  0178			DELAY:
+   82:	  0178	7E FA		MOV R6,#250
+   83:	  017A			MUTER:
+   84:	  017A	7F FA		MOV R7,#250
+   85:	  017C	DF FE		DJNZ R7,$
+   86:	  017E	DE FA		DJNZ R6,MUTER
+   87:	  0180	22		RET
+   88:
+   89:				;=======DATABASE STRING=======
+   90:	  0181			TULISAN1:
+   91:	  0181	53 45 4C 41	DB 'SELAMAT DATANG',0
+	  0185	4D 41 54 20
+	  0189	44 41 54 41
+	  018D	4E 47 00
+   92:
+   93:				;=======DATABASE STRING=======
+   94:	  0190			TULISAN2:
+   95:	  0190	50 41 52 41	DB 'PARA MAHASISWA',1
+	  0194	20 4D 41 48
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 3
+
+
+
+ Line  I  Addr  Code            Source
+
+	  0198	41 53 49 53
+	  019C	57 41 01
+   96:
+   97:				;=======DATABASE STRING=======
+   98:	  019F			TULISAN3:
+   99:	  019F	54 45 4B 4E	DB 'TEKNIK ELEKTRO',1
+	  01A3	49 4B 20 45
+	  01A7	4C 45 4B 54
+	  01AB	52 4F 01
+  100:
+  101:				;=======DATABASE STRING=======
+  102:	  01AE			TULISAN4:
+  103:	  01AE	55 49 4E 20	DB 'UIN SUNAN GUNUNG DJATI BANDUNG',1
+	  01B2	53 55 4E 41
+	  01B6	4E 20 47 55
+	  01BA	4E 55 4E 47
+	  01BE	20 44 4A 41
+	  01C2	54 49 20 42
+	  01C6	41 4E 44 55
+	  01CA	4E 47 01
+  104:
+  105:				END
+
+
+
+
+
+                     register banks used:  ---
+
+                     no errors
+
+
+
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 4
+
+
+
+
+
+	       L I S T   O F   S Y M B O L S
+	       =============================
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+??ASEM_51			  NUMBER    8051
+??VERSION			  NUMBER    0130
+AC				  BIT	      D6
+ACC				  DATA	      E0
+B				  DATA	      F0
+CY				  BIT	      D7
+DATALCD				  CODE	    0135	  39
+DELAY				  CODE	    0178	  81
+DISPCLR				  NUMBER    0001	   5
+DISPON				  NUMBER    000C	   8
+DPH				  DATA	      83
+DPL				  DATA	      82
+EA				  BIT	      AF
+ENTRMOD				  NUMBER    0006	   7
+ES				  BIT	      AC
+ET0				  BIT	      A9
+ET1				  BIT	      AB
+EX0				  BIT	      A8
+EX1				  BIT	      AA
+EXTI0				  CODE	    0003
+EXTI1				  CODE	    0013
+F0				  BIT	      D5
+FUNCSET				  NUMBER    0038	   6
+IE				  DATA	      A8
+IE0				  BIT	      89
+IE1				  BIT	      8B
+INITLCD				  CODE	    0145	  49
+INSTLCD				  CODE	    0131	  36
+INT0				  BIT	      B2
+INT1				  BIT	      B3
+IP				  DATA	      B8
+IT0				  BIT	      88
+IT1				  BIT	      8A
+LCDOUT				  CODE	    0139	  41
+LCDSTRING			  CODE	    0173	  74
+LOOP				  CODE	    012F	  34
+MUTER				  CODE	    017A	  83
+OV				  BIT	      D2
+P				  BIT	      D0
+P0				  DATA	      80
+P1				  DATA	      90
+P2				  DATA	      A0
+P3				  DATA	      B0
+PCON				  DATA	      87
+PRINTSTRINGLOOP			  CODE	    016F	  71
+PS				  BIT	      BC
+PSW				  DATA	      D0
+PT0				  BIT	      B9
+PT1				  BIT	      BB
+PX0				  BIT	      B8
+
+ASEM-51 V1.3                                         Copyright (c) 2002 by W.W. Heinz                                         PAGE 5
+
+
+
+SYMBOL				  TYPE     VALUE	LINE
+------------------------------------------------------------
+PX1				  BIT	      BA
+RB8				  BIT	      9A
+RD				  BIT	      B7
+REN				  BIT	      9C
+RESET				  CODE	    0000
+RI				  BIT	      98
+RS0				  BIT	      D3
+RS1				  BIT	      D4
+RXD				  BIT	      B0
+SBUF				  DATA	      99
+SCON				  DATA	      98
+SINT				  CODE	    0023
+SM0				  BIT	      9F
+SM1				  BIT	      9E
+SM2				  BIT	      9D
+SP				  DATA	      81
+START				  CODE	    0100	  11
+T0				  BIT	      B4
+T1				  BIT	      B5
+TB8				  BIT	      9B
+TCON				  DATA	      88
+TF0				  BIT	      8D
+TF1				  BIT	      8F
+TH0				  DATA	      8C
+TH1				  DATA	      8D
+TI				  BIT	      99
+TIMER0				  CODE	    000B
+TIMER1				  CODE	    001B
+TL0				  DATA	      8A
+TL1				  DATA	      8B
+TMOD				  DATA	      89
+TR0				  BIT	      8C
+TR1				  BIT	      8E
+TULISAN1			  CODE	    0181	  90
+TULISAN2			  CODE	    0190	  94
+TULISAN3			  CODE	    019F	  98
+TULISAN4			  CODE	    01AE	 102
+TXD				  BIT	      B1
+WR				  BIT	      B6
+WR_DT				  CODE	    0166	  65
